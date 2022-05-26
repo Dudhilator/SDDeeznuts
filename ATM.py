@@ -1,178 +1,130 @@
-yesnolist = ['YES' , 'NO']
-def beginningmainmenuthing():
-    global InitialBalance
-    global username
-    global password
-    global validityvariable
-    global usernamepassword
-    validityvariable = 'F'
-    f = open('usernamepassword.txt','r')
-    print('Welcome to the Alexia T Martin Bank')
-    username = input('Please enter your username ')
-    password = input('Please enter your password ')
-    for line in f.readlines():
-        usernamepassword = line.split()
-        if username == usernamepassword[0] and password == usernamepassword[1]:
-            InitialBalance = int(usernamepassword[2])
-            validityvariable = 'T'
-    if validityvariable == 'F':
-        print('This username and password have not been registered in our system')
-        print('Would you like to register?')
-        tryagain = input('Yes or No ')
-        tryagainvariable = 'F'
-        while tryagainvariable == 'F':
-            if tryagain.upper() == 'YES':
-                tryagainvariable = 'T' and registerfunction()
-            if tryagain.upper() == 'NO':
-                tryagainvariable = 'T' and endscreen()
-            if tryagain.upper() not in yesnolist:
-                print('Invalid input, please try again')
-                tryagain = input('')
-    f.close
-def registerfunction():
-    username = input('What would you like your username to be? ')
-    password = input('What would you like your password to be? ')
-    f = open('usernamepassword.txt','a')
-    f.write(username)
-    f.write(' ')
-    f.write(password)
-    f.write(' ')
-    f.write('0')
-    f.write('\n')
-    f.close()
-    print('Your new username is' , username , 'and your new password is' , password)
-    print("Make sure you don't forget them")
-    print('\n')
-    beginningmainmenuthing()
-def moneysectionfunction():
-    global Withdrawvariable
-    global Depositvariable
-    global Balancevariable
-    Withdrawvariable = 'F'
-    Depositvariable = 'F'
-    Balancevariable = 'F'
-    whatiwanttodo = 'f'
-    while whatiwanttodo == 'f':
-        print('What would you like to do?')
-        print('1: Withdraw')
-        print('2: Deposit')
-        print('3: Check Balance')
-        print('4: Quit')
-        whattheywanttodolol = input('')
-        if whattheywanttodolol == '1':
-            Withdrawvariable = 'T'
-            whatiwanttodo = 't'
-        if whattheywanttodolol == '2':
-            Depositvariable = 'T'
-            whatiwanttodo = 't'
-        if whattheywanttodolol == '3':
-            Balancevariable = 'T'
-            whatiwanttodo = 't'
-        if whattheywanttodolol == '4':
-            endscreen()
-        if whattheywanttodolol != '1' and whattheywanttodolol != '2' and whattheywanttodolol != '3':
-            print('Put the right fucking thing in dumbass')
-def endscreen():
-    global usernamepassword
+import pwinput
+transactions = []
+def verify_input(text, options): #this function just loops the input until the user inputs one of the options
+    user_input = input(text).lower().strip()
+    while user_input not in [option.lower() for option in options] or not user_input: # if user input is not exactly what is in options, or if input is empty string ask user to enter input again
+        print("Invalid input, please try again.")
+        user_input = input(text).lower().strip()
+    return user_input #copied from learning tool program 
+
+def main_menu():
+    global current_balance, username, database, password
+    database = {}
+    with open("usernamepassword.txt",'r') as f:
+        for line in f.readlines():
+            database[line.strip().split()[0]] = (line.strip().split()[1], line.strip().split()[2]) # username: (password, balance)
+    
+    print('Welcome to the Alexia T Martin Bank') 
+    login_or_register = verify_input("Would you like to login or register? ", ["login", "register"])
+    if login_or_register == "login": # if user logging in 
+        logged_in = False 
+        while not logged_in:
+            username = input('Please enter your username: ')
+            password = pwinput.pwinput('Please enter your password: ') #used pwinput instead of getpass because I wanted to see * instead of hiding the user input completely
+            if username in database.keys(): #checks if the username is in the database 
+                if database[username][0] == password: #if username in database, check if password is correct
+                    current_balance = int(database[username][1])
+                    print("Successfully logged in.")
+                    logged_in = True 
+                else:
+                    print("Invalid username or password")#TODO add option to go back so you can register
+            else:
+                print("Invalid username or password")
+    else: # if user registering 
+        username = input('What would you like your username to be? ') 
+        password = pwinput.pwinput('What would you like your password to be? ') #use getpass to hide user password
+        while username in database.keys(): #check if username taken 
+            print("Username already taken, please enter another one")
+            username = input('What would you like your username to be? ') 
+            password = pwinput.pwinput('What would you like your password to be? ')
+        with open('usernamepassword.txt','a') as f:#TODO check for invalid character e.g. space as this could mess up database
+            f.write(f"\n{username} {password} 0") #add user to database
+        print("Successfully registered")
+        current_balance = 0
+    main()#once user been logged in or registered, start main program
+
+def main():
+    print("\n")
+    print('What would you like to do?')
+    print('1: Withdraw')
+    print('2: Deposit')
+    print('3: Check Balance')
+    print('4: Quit')
+
+    action = verify_input("Press the number of the action you would like to do ", ["1","2","3","4"])
+    match action:
+        case "1": withdraw_function()
+        case "2": deposit_function()
+        case "3": balance_function()
+        case "4": end_screen()
+
+def end_screen():#TODO finish receipt
+    global transactions
     f = open('Receipt.txt','w')
     f.write('\n')
-    f.write(usernamepassword[2])
+    f.close()
+    print("Receipt.txt updated")
     print('Thank you for using this ATM bank ATM')
     print('\n')
-    main()
-def Withdrawfunction():
-    global InitialBalance
-    global Finalbalance
-    global username
-    global password
-    credentials = username + ' ' + password + ' ' + str(InitialBalance)
-    print('You have $'+str(InitialBalance) , 'in your account.')
-    Withdrawalamount = int(input('How much would you like to withdraw? '))
-    if Withdrawalamount%5 != 0:
+    quit()
+
+def withdraw_function():
+    global current_balance, final_balance, username, password
+    credentials = username + ' ' + password + ' ' + str(current_balance)
+    print('You have $'+str(current_balance) , 'in your account.')
+
+    withdraw_amount = int(input('How much would you like to withdraw? ')) #TODO check user input so that only integer
+    if withdraw_amount % 5 != 0:
         print('You can only withdraw money in $5, $10, $20, $50, and $100 notes.')
         print('Would you like to try again?')
-        tryagain = input('Yes or no? ')
-        tryagainvariable = 'F'
-        while tryagainvariable == 'F':
-            if tryagain.upper() == 'YES':
-                tryagainvariable = 'T' and Withdrawfunction()
-            if tryagain.upper() == 'NO':
-                tryagainvariable = 'T' and mainpy()
-            if tryagain.upper() not in yesnolist:
-                print('Invalid input, please try again')
-                tryagain = input('')
-    Finalbalance = InitialBalance - Withdrawalamount
-    finalcredentials = username + ' ' + password + ' ' + str(Finalbalance)
-    if Finalbalance >= 0:
-        with open('usernamepassword.txt','r') as f:
+        try_again = verify_input("Yes or No? ", ["yes", "no"])
+        if try_again.upper() == 'YES': withdraw_function()
+        else: main()
+
+    final_balance = current_balance - withdraw_amount
+    final_credentials = username + ' ' + password + ' ' + str(final_balance)
+
+    if final_balance >= 0:#check if amount withdrawn exceeds balance 
+        with open('usernamepassword.txt',"r") as f:
             data = f.read()
-            data = data.replace(credentials,finalcredentials)
-        with open('usernamepassword.txt','w') as f:
-            f.write(data)
-        print('You now have $' + str(Finalbalance) , 'in your account.')
+            data = data.replace(credentials,final_credentials)
+        with open("usernamepassword.txt", "w") as f:
+            f.write(data) #write new balance to database
+        print('Successfully withdrawn ' + str(withdraw_amount) + '. You now have $' + str(final_balance) , 'in your account.')
+        current_balance = int(final_balance) #update current balance, add the int() to copy the integer value 
+        transactions.append(("withdraw", current_balance, final_balance, withdraw_amount))#add new transaction to list for the reciept
     else:
         print('It appears you do not have this amount in your account.')
         print('Would you like to try again with a more suitable amount?')
-        tryagain = input('Yes or No ')
-        tryagainvariable = 'F'
-        while tryagainvariable == 'F':
-            if tryagain.upper() == 'YES':
-                tryagainvariable = 'T' and Withdrawfunction()
-            if tryagain.upper() == 'NO':
-                tryagainvariable = 'T' and mainpy()
-            if tryagain.upper() not in yesnolist:
-                print('Invalid input, please try again')
-                tryagain = input('')
-    f = open('Receipt.txt','w')
-    f.write(str(Withdrawalamount) + ' withdrawn')
-    f.close()
-def retryfunction():
-    print('Would you like to make another transaction?')
-    tryagain = input('Yes or No? ')
-    tryagainvariable = 'F'
-    while tryagainvariable == 'F':
-        if tryagain.upper() == 'YES':
-            tryagainvariable = 'T' and mainpy()
-        if tryagain.upper() == 'NO':
-            tryagainvariable = 'T' and endscreen()
-        if tryagain.upper() not in yesnolist:
-            print('Invalid input, please try again')
-            tryagain = input('')
-def Depositfunction():
-    print('deposit')
-    global InitialBalance
-    global Finalbalance
-    global username
-    global password
-    credentials = username + ' ' + password + ' ' + str(InitialBalance)
-    print('You have $'+str(InitialBalance) , 'in your account.')
-    Depositamount = input('How much would you like to deposit? ')
-    Finalbalance = InitialBalance + int(Depositamount)
-    finalcredentials = username + ' ' + password + ' ' + str(Finalbalance)
-    with open('usernamepassword.txt','r') as f:
-        data = f.read()
-        data = data.replace(credentials,finalcredentials)
-    with open('usernamepassword.txt','w') as f:
-        f.write(data)
-    print('You now have $' + str(Finalbalance) , 'in your account')
-    f = open('Receipt.txt','w')
-    f.write(Depositamount + ' deposited')
-    f.close()
-def Balancefunction():
-    global InitialBalance
-    print('Balancefunction')
-    print('You have $'+ str(InitialBalance) , 'in your account')
-def mainpy():
-    moneysectionfunction()
-    if Withdrawvariable =='T':
-        Withdrawfunction()
-    if Depositvariable == 'T':
-        Depositfunction()
-    if Balancevariable == 'T':
-        Balancefunction()
-    retryfunction()
-def main():
-    beginningmainmenuthing()
-    mainpy()
-main()
+        try_again = verify_input("Yes or No? ", ["yes", "no"])
+        if try_again.upper() == 'YES': withdraw_function()
+        else: main()
+    main()
 
+def deposit_function():
+    print('deposit')
+    global current_balance, final_balance, username, password
+    credentials = username + ' ' + password + ' ' + str(current_balance)
+    print('You have $'+str(current_balance) , 'in your account.')
+    deposit_amount = input('How much would you like to deposit? ')
+    final_balance = current_balance + int(deposit_amount)
+    final_credentials = username + ' ' + password + ' ' + str(final_balance)
+    
+    with open('usernamepassword.txt', "r") as f:
+        data = f.read()
+        data = data.replace(credentials,final_credentials)
+    with open("usernamepassword.txt", "w") as f:
+        f.write(data)#write new balance to database
+
+    print("Successfully withdrawn " + str(deposit_amount) +'. You now have $' + str(final_balance) , 'in your account')
+    current_balance = int(final_balance)
+    transactions.append(("deposit", current_balance, final_balance, deposit_amount))#add new transaction to list for the reciept
+    main()
+
+def balance_function():
+    global current_balance
+    print('You have $'+ str(current_balance) , 'in your account')
+    main()
+
+if __name__ == "__main__":
+    main_menu()
