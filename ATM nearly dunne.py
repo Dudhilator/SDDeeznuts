@@ -196,7 +196,7 @@ def deposit_function():
         charactercountinglist.append(charactercount)
         a = True
 
-    print("Successfully withdrawn " + str(deposit_amount) +'. You now have $' + str(final_balance) , 'in your account')
+    print("Successfully deposited " + str(deposit_amount) +'. You now have $' + str(final_balance) , 'in your account')
     current_balance = int(final_balance)
     transactions.append(("Deposit   ", deposit_amount))#add new transaction to list for the reciept
     main()
