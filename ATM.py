@@ -14,7 +14,7 @@ def main_menu():
     database = {}
     with open("usernamepassword.txt",'r') as f:
         for line in f.readlines():
-            database[line.strip().split(sep = "!@#$%^&*()_+")[0]] = (line.strip().split(sep = "!@#$%^&*()_+")[1], line.strip().split(sep = "!@#$%^&*()_+")[2]) # username: (password, balance)
+            database[line.strip().split(sep = "(&*(&**(&")[0]] = (line.strip().split(sep = "(&*(&**(&")[1], line.strip().split(sep = "(&*(&**(&")[2]) # username: (password, balance)
     
     print('''Welcome to The Alexia T Martin Bank
 -----------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ Withdrawals have to be notes only
             username = input('What would you like your username to be? ') 
             password = pwinput.pwinput('What would you like your password to be? ')
         with open('usernamepassword.txt','a') as f:
-            f.write(f'\n{username}!@#$%^&*()_+{password}!@#$%^&*()_+0')#add user to database with balance of 0
+            f.write(f'\n{username}(&*(&**(&{password}(&*(&**(&0')#add user to database with balance of 0
         print("Successfully registered")
         current_balance = 0
     main()#once user been logged in or registered, start main program
@@ -163,11 +163,12 @@ def end_screen(): #print receipt
         f.write('a better place for the rich')
         f.close()
     print('Thank you for using this ATM bank ATM')
+    funnycipher()
     quit()
 
 def withdraw_function():
     global current_balance, final_balance, username, password, a
-    credentials = username + '!@#$%^&*()_+' + password + '!@#$%^&*()_+' + str(current_balance)
+    credentials = username + '(&*(&**(&' + password + '(&*(&**(&' + str(current_balance)
     print('You have $'+str(current_balance) , 'in your account.')
 
     withdraw_amount = input('How much would you like to withdraw? ')
@@ -183,7 +184,7 @@ def withdraw_function():
         else: main()
 
     final_balance = current_balance - withdraw_amount
-    final_credentials = username + '!@#$%^&*()_+' + password + '!@#$%^&*()_+' + str(final_balance)
+    final_credentials = username + '(&*(&**(&' + password + '(&*(&**(&' + str(final_balance)
 
     if final_balance >= 0:#check if amount withdrawn exceeds balance 
         with open('usernamepassword.txt',"r") as f:
@@ -205,7 +206,7 @@ def withdraw_function():
 
 def deposit_function():
     global current_balance, final_balance, username, password, a
-    credentials = username + '!@#$%^&*()_+' + password + '!@#$%^&*()_+' + str(current_balance)
+    credentials = username + '(&*(&**(&' + password + '(&*(&**(&' + str(current_balance)
     print('You have $'+str(current_balance) , 'in your account.')
     deposit_amount = input("How much would you like to deposit? ")
     while not deposit_amount.isdigit(): #check if the input has characters besides digits 
@@ -214,7 +215,7 @@ def deposit_function():
     deposit_amount = int(deposit_amount)
 
     final_balance = current_balance + deposit_amount
-    final_credentials = username + '!@#$%^&*()_+' + password + '!@#$%^&*()_+' + str(final_balance)
+    final_credentials = username + '(&*(&**(&' + password + '(&*(&**(&' + str(final_balance)
     
     with open('usernamepassword.txt', "r") as f:
         data = f.read()
@@ -232,5 +233,31 @@ def balance_function():
     print('You have $'+ str(current_balance) , 'in your account')
     main()
 
+def funnycipher():
+    with open('usernamepassword.txt','r') as file:
+        flines = file.readlines()
+        result = ''
+        for a in flines:
+            textrange = range(len(a))
+            for i in textrange:
+                char = a[i]
+                result += chr(ord(char)+2)
+    with open('usernamepassword.txt','w') as file:
+        file.truncate(0)
+        file.write(result)
+
+def uncipher():
+    with open('usernamepassword.txt','r') as file:
+        flines = file.readlines()
+        result = ''
+        for a in flines:
+            textrange = range(len(a))
+            for i in textrange:
+                char = a[i]
+                result += chr(ord(char)-2)
+    with open('usernamepassword.txt','w') as file:
+        file.truncate(0)
+        file.write(result)
 if __name__ == "__main__":
+    uncipher()
     main_menu()
