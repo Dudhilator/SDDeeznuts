@@ -1,6 +1,6 @@
 import pwinput
+from datetime import datetime
 a = False
-charactercountinglist = []
 transactions = []
 def verify_input(text, options): #this function just loops the input until the user inputs one of the options
     user_input = input(text).lower().strip()
@@ -36,10 +36,10 @@ Withdrawals have to be notes only
                     print("Successfully logged in.")
                     logged_in = True 
                 else:
-                    print("Invalid username or password")#TODO add option to go back so you can register. 
-                    AmountOfTimesLoggedIn += 1 #//// I did it, it works, u can probably make it look neater by messing with the previous code
-                    if AmountOfTimesLoggedIn == 3: #. And readbility of the output is kinda rough.
-                        print('It appears that you have forgotten your credentials')
+                    print("Invalid username or password") 
+                    AmountOfTimesLoggedIn += 1 
+                    if AmountOfTimesLoggedIn == 3: 
+                        print('It appears that you may have forgotten your credentials')
                         print('Would you like to keep trying or quit?')
                         print('1) Continue trying')
                         print('2) Quit')
@@ -49,7 +49,7 @@ Withdrawals have to be notes only
                                 AmountOfTimesLoggedIn = 0
                             case '2':
                                 main_menu()
-            else:
+            else: 
                 print("Invalid username or password")
                 AmountOfTimesLoggedIn += 1
                 if AmountOfTimesLoggedIn == 3:
@@ -71,12 +71,7 @@ Withdrawals have to be notes only
             username = input('What would you like your username to be? ') 
             password = pwinput.pwinput('What would you like your password to be? ')
         with open('usernamepassword.txt','a') as f:
-            f.write('\n')
-            f.write(username)
-            f.write(' ')
-            f.write(password) 
-            f.write(' ')
-            f.write('0') #add user to database
+            f.write(f'\n{username}!@#$%^&*()_+{password}!@#$%^&*()_+0')#add user to database with balance of 0
         print("Successfully registered")
         current_balance = 0
     main()#once user been logged in or registered, start main program
@@ -102,62 +97,59 @@ def main():
         case "quit": end_screen()
 
 def find_largest_number(): #find how many digits each transaction has and return largest digit length
-    global charactercountinglist, final_balance
+    charactercountinglist = [len(str(transaction[1])) for transaction in transactions] #get the num of digit of each trarnsaction
     charactercountinglist.append(len(str(final_balance)))
-    charactercountinglist = charactercountinglist.sort(reverse = True)
-    return charactercountinglist[0] 
+    charactercountinglist.sort(reverse = True)
+    return charactercountinglist[0] #return the largest num of digit
 
-def receipt(): #format and write receipt to file 
+def end_screen(): #print receipt
     global transactions, final_balance
-    underscorecount = 0
-    moniescount = 0
-    balancecount = 0
-    largest_number = find_largest_number()
-    f = open('Receipt.txt','w')
-    f.write('The Alexia T Martin Bank ATM Receipt')
-    f.write('\n')
-    f.write('\n')
-    while underscorecount <= largest_number+4:
-        f.write('__')
-        underscorecount += 1
-    f.write('\n')
-    f.write('\n')
-    for monies in transactions:
-        f.write(monies[0])
-        monieslen = len(str(monies[1]))
-        while moniescount <= largest_number-monieslen+7:
-            f.write(' ')
-            moniescount += 1
-        f.write(str(monies[1]))
-        f.write('\n')
+    if transactions: # if transactions took place 
+        underscorecount = 0
         moniescount = 0
-    f.write('\n')
-    f.write('Balance   ')
-    balancelen = len(str(final_balance))
-    underscorecount = 0
-    while balancecount <= largest_number-balancelen+7:
-        f.write(' ')
-        balancecount += 1
-    f.write(str(final_balance))
-    f.write('\n')
-    while underscorecount <= largest_number+4:
-        f.write('__')
-        underscorecount += 1
-    f.write('\n')
-    f.write('We strive to make the world')
-    f.write('\n')
-    f.write('a better place for the rich')
-    f.close()
-    quit()
-
-def end_screen():
-    global transactions, final_balance
-    if transactions == []: # if transactions took place 
-        receipt()
+        balancecount = 0
+        largest_number = find_largest_number()
+        f = open('Receipt.txt','w')
+        f.write('The Alexia T Martin Bank ATM Receipt\n')
+        f.write('User: ' + username + "\n")
+        f.write('\n')
+        while underscorecount <= largest_number+4:
+            f.write('__')
+            underscorecount += 1
+        f.write('\n')
+        f.write('\n')
+        for monies in transactions:
+            f.write(monies[2] + "   ")
+            f.write(monies[0])
+            monieslen = len(str(monies[1]))
+            while moniescount <= largest_number-monieslen+7:
+                f.write(' ')
+                moniescount += 1
+            f.write(str(monies[1]))
+            f.write('\n')
+            moniescount = 0
+        f.write('\n')
+        f.write(datetime.now().strftime("%d/%m/%Y %H:%M:%S") + '   Balance   ') #fomrat the balance
+        balancelen = len(str(final_balance))
+        underscorecount = 0
+        while balancecount <= largest_number-balancelen+7:
+            f.write(' ')
+            balancecount += 1
+        
+        f.write(str(final_balance))
+        f.write('\n')
+        while underscorecount <= largest_number+4:
+            f.write('__')
+            underscorecount += 1
+        f.write('\n')
+        f.write('We strive to make the world')
+        f.write('\n')
+        f.write('a better place for the rich')
+        f.close()
     else: # if no transactions take place 
         f = open('Receipt.txt','w')
-        f.write('The Alexia T Martin Bank ATM Receipt')
-        f.write('\n')
+        f.write('The Alexia T Martin Bank ATM Receipt\n')
+        f.write('User: ' + username + "\n")
         f.write('______________________________________')
         f.write('\n')
         f.write('\n')
@@ -170,9 +162,8 @@ def end_screen():
         f.write('\n')
         f.write('a better place for the rich')
         f.close()
-        print('Thank you for using this ATM bank ATM')
-        print('\n')
-        quit()
+    print('Thank you for using this ATM bank ATM')
+    quit()
 
 def withdraw_function():
     global current_balance, final_balance, username, password, a
@@ -200,11 +191,10 @@ def withdraw_function():
             data = data.replace(credentials,final_credentials)
         with open("usernamepassword.txt", "w") as f:
             f.write(data) #write new balance to database
-            charactercountinglist.append(len(str(withdraw_amount)))
             a = True
         print('Successfully withdrawn ' + str(withdraw_amount) + '. You now have $' + str(final_balance) , 'in your account.')
         current_balance = int(final_balance) #update current balance, add the int() to copy the integer value 
-        transactions.append(("Withdrawal", withdraw_amount))#add new transaction to list for the reciept
+        transactions.append(("Withdrawal", withdraw_amount, datetime.now().strftime("%d/%m/%Y %H:%M:%S")))#add new transaction to list for the reciept
     else:
         print('It appears you do not have this amount in your account.')
         print('Would you like to try again with a more suitable amount?')
@@ -231,11 +221,10 @@ def deposit_function():
         data = data.replace(credentials,final_credentials)
     with open("usernamepassword.txt", "w") as f:
         f.write(data)#write new balance to database
-        charactercountinglist.append(len(str(deposit_amount)))
 
     print("Successfully deposited " + str(deposit_amount) +'. You now have $' + str(final_balance) , 'in your account')
     current_balance = int(final_balance)
-    transactions.append(("Deposit   ", deposit_amount))#add new transaction to list for the reciept
+    transactions.append(("Deposit   ", deposit_amount, datetime.now().strftime("%d/%m/%Y %H:%M:%S")))#add new transaction to list for the reciept
     main()
 
 def balance_function():
