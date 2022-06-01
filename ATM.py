@@ -1,5 +1,6 @@
 import pwinput
 from datetime import datetime
+import random
 a = False
 transactions = []
 def verify_input(text, options): #this function just loops the input until the user inputs one of the options
@@ -14,7 +15,7 @@ def main_menu():
     database = {}
     with open("usernamepassword.txt",'r') as f:
         for line in f.readlines():
-            database[line.strip().split(sep = "(&*(&**(&")[0]] = (line.strip().split(sep = "(&*(&**(&")[1], line.strip().split(sep = "(&*(&**(&")[2]) # username: (password, balance)
+            database[line.strip().split(sep = "(&*(&**(&")[0]] = (line.strip().split(sep = "(&*(&**(&")[1], line.strip().split(sep = "(&*(&**(&")[2], line.strip().split(sep = '(&*(&**(&')[3]) # username: (password, balance)
     
     print('''Welcome to The Alexia T Martin Bank
 -----------------------------------------------------------------------------------------------
@@ -71,7 +72,7 @@ Withdrawals have to be notes only
             username = input('What would you like your username to be? ') 
             password = pwinput.pwinput('What would you like your password to be? ')
         with open('usernamepassword.txt','a') as f:
-            f.write(f'\n{username}(&*(&**(&{password}(&*(&**(&0')#add user to database with balance of 0
+            f.write(f'{username}(&*(&**(&{password}(&*(&**(&0(&*(&**(&\n')#add user to database with balance of 0
         print("Successfully registered")
         current_balance = 0
     main()#once user been logged in or registered, start main program
@@ -163,7 +164,7 @@ def end_screen(): #print receipt
         f.write('a better place for the rich')
         f.close()
     print('Thank you for using this ATM bank ATM')
-    funnycipher()
+    cipher()
     quit()
 
 def withdraw_function():
@@ -233,7 +234,10 @@ def balance_function():
     print('You have $'+ str(current_balance) , 'in your account')
     main()
 
-def funnycipher():
+def cipher():
+    keycipher()
+
+def caesarcipher():
     with open('usernamepassword.txt','r') as file:
         flines = file.readlines()
         result = ''
@@ -246,7 +250,58 @@ def funnycipher():
         file.truncate(0)
         file.write(result)
 
+
+def keycipher():
+    keything = []
+    keythingbutstr = []
+    keything.append(random.randint(1,3))
+    result = ''
+    p = open('usernamepassword.txt','r+')
+    read = p.read()
+    while len(keything) <= len(read):
+        keything.append(random.randint(1,3))
+    p.close()
+    with open('usernamepassword.txt','r') as f:
+        flines = f.readlines()
+        for lines in flines:
+            textrange = range(len(lines))
+            for i in textrange:
+                char = lines[i]
+                result += chr(ord(char)+keything[i])
+    with open('usernamepassword.txt','w') as f:
+        f.truncate(0)
+        f.write(result)
+    for thing in keything:
+        keythingbutstr.append(str(thing))
+    keythingstring = ''.join(keythingbutstr)
+    with open('key.txt','w')as k:
+        k.write(keythingstring)
+
+def unkeycipher():
+    keything = []
+    result = ''
+    with open('key.txt','r') as k:
+        klines = k.readlines()
+        for kklines in klines:
+            ktextrange = range(len(kklines))
+            for ki in ktextrange:
+                kchar = kklines[ki]
+                keything.append(kchar)
+    with open('usernamepassword.txt','r') as f:
+        flines = f.readlines()
+        for lines in flines:
+            textrange = range(len(lines))
+            for i in textrange:
+                char = lines[i]
+                result += chr(ord(char)-int(keything[i]))
+    with open('usernamepassword.txt','w') as f:
+        f.truncate(0)
+        f.write(result)
+
 def uncipher():
+    unkeycipher()
+
+def uncaesercipher():
     with open('usernamepassword.txt','r') as file:
         flines = file.readlines()
         result = ''
