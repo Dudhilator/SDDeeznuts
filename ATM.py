@@ -15,7 +15,7 @@ def main_menu():
     database = {}
     with open("usernamepassword.txt",'r') as f:
         for line in f.readlines():
-            database[line.strip().split(sep = "!@#$%^&*()_+")[0]] = (line.strip().split(sep = "!@#$%^&*()_+")[1], line.strip().split(sep = "!@#$%^&*()_+")[2], line.strip().split(sep = '!@#$%^&*()_+')[3]) # username: (password, balance)
+            database[line.strip().split(sep = "!@#$%^&*()_+")[0]] = (line.strip().split(sep = "!@#$%^&*()_+")[1], line.strip().split(sep = "!@#$%^&*()_+")[2]) # username: (password, balance)
     
     print('''Welcome to The Alexia T Martin Bank
 -----------------------------------------------------------------------------------------------
@@ -113,9 +113,8 @@ def end_screen(): #print receipt
         f = open('Receipt.txt','w')
         f.write('The Alexia T Martin Bank ATM Receipt\n')
         f.write('User: ' + username + "\n")
-        f.write('\n')
-        while underscorecount <= largest_number+4:
-            f.write('__')
+        while underscorecount <= largest_number+39:
+            f.write('_')
             underscorecount += 1
         f.write('\n')
         f.write('\n')
@@ -139,8 +138,8 @@ def end_screen(): #print receipt
         
         f.write(str(final_balance))
         f.write('\n')
-        while underscorecount <= largest_number+4:
-            f.write('__')
+        while underscorecount <= largest_number+39:
+            f.write('_')
             underscorecount += 1
         f.write('\n')
         f.write('We strive to make the world')
@@ -164,6 +163,10 @@ def end_screen(): #print receipt
         f.write('a better place for the rich')
         f.close()
     print('Thank you for using this ATM bank ATM')
+    with open('usernamepassword.txt','r') as fa:
+        fread = fa.read()
+    with open('usernamepassword.txt','w') as fa:
+        fa.write(encrypt(fread))
     quit()
 
 def withdraw_function():
@@ -232,6 +235,9 @@ def balance_function():
     global current_balance
     print('You have $'+ str(current_balance) , 'in your account')
     main()
-
 if __name__ == "__main__":
+    with open('usernamepassword.txt','r') as fa:
+        fread = fa.read()
+    with open('usernamepassword.txt','w') as fa:
+        fa.write(decrypt(fread))
     main_menu()
