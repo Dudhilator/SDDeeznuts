@@ -75,16 +75,20 @@ Withdrawals have to be notes only
                             AmountOfTimesLoggedIn = 0
                         case '2':
                             login_menu()
-    else: # if user registering 
-        username = input('What would you like your username to be? ') 
-        password = pwinput.pwinput('What would you like your password to be? ') #use getpass to hide user password
-        while username in database.keys(): #check if username taken 
-            print("Username already taken, please enter another one")
+    else: # if user registering
+        is_registered = False
+        while not is_registered:
             username = input('What would you like your username to be? ') 
-            password = pwinput.pwinput('What would you like your password to be? ')
-        database = decrypt_database() #have to save this to a variable before opening the file, because if i call it after opening the file, the file is wiped first and empty string is sent to decrypt/encrypt function causing the Fernet module to self destruct
+            password = pwinput.pwinput('What would you like your password to be? ') #use getpass to hide user password
+            if username in database.keys(): #check if username taken  
+                print("Username already taken, please enter another one")
+            elif not username or not password: #if username and/or password is an empty string 
+                print("Please enter a valid username or password")
+            else: #valid registration 
+                is_registered = True 
+        data = decrypt_database() #have to save this to a variable before opening the file, because if i call it after opening the file, the file is wiped first and empty string is sent to decrypt/encrypt function causing the Fernet module to self destruct
         with open('usernamepassword.txt','w') as f:
-            f.write(encrypt(database + f"\n{username}!@#$%^&*()_+{password}!@#$%^&*()_+0")) #add an extra line with new user, then encrypt and write it to the file 
+            f.write(encrypt(data + f"\n{username}!@#$%^&*()_+{password}!@#$%^&*()_+0")) #add an extra line with new user, then encrypt and write it to the file 
         print("Successfully registered")
         current_balance = 0
         original_balance = 0
