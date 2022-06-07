@@ -17,13 +17,13 @@ def read_key(line_num): #read key at line number
 def write_key(key, line_num): #write the key to the line number needed 
     with open("key.txt", "r") as f: #for some reason r+ does some wacky stuff so have to manually open to read then close then open to write 
         content = f.readlines()
-    content[line_num] = key + "\n"
+    content[line_num] = key + "\n" #change that line to new key 
     with open("key.txt","w") as f:
         f.writelines(content)
 
 
 
-def caesar_encrypt(text):
+def caesar_encrypt(text): # for each character in the text, convert to unicode add a random amount and convert back to character
     key = random.randint(-10, 10)
     write_key(str(key), 0)
     result = ''
@@ -41,7 +41,7 @@ def caesar_encrypt(text):
             caesarlist.append('S')
         result += finnishchar
     write_key(''.join(caesarlist), 5)
-    return result # for each character in the text, convert to unicode add 2 and convert back to character
+    return result 
 
 
 def caesar_decrypt(text):
@@ -100,3 +100,12 @@ def fernet_encrypt(text):
 def fernet_decrypt(text):
     key_object = Fernet(bytes(read_key(2), "utf-8")) #read the key and turn into byte, then turn into key object
     return key_object.decrypt(bytes(text,"utf-8")).decode('utf-8') #turn the text into bytes for the key object to decrypt, then turn back into string 
+
+if __name__ == "__main__": #this part only runs if you manually run this file, and does not run when imported in ATM.py
+    a = encrypt("Dunne!@#$%^&*()_+1111!@#$%^&*()_+1000")
+    print(a)
+    print(decrypt(a)) #testing if encrypt and decrypt both work
+    
+    #The above is template in case need to reset usernamepassword.txt as the key is changed each time you use the encrypt function, as program cooks if usernamepassword.txt is empty
+    #run this file and copy paste the encrypted text into the usernamepassword.txt and save it, then the main file should run properly
+
