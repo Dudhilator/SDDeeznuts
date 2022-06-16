@@ -104,7 +104,7 @@ def fernet_decrypt(text):
 
 
 if __name__ == "__main__": #this part only runs if you manually run this file, and does not run when imported in ATM.py
-    a = encrypt("Dunne!@#$%^&*()_+1111!@#$%^&*()_+1000\nRyan!@#$%^&*()_+1234!@#$%^&*()_+0\nRyan_Dunne!@#$%^&*()_+12345!@#$%^&*()_+9999999999999999\nMr_Dunne!@#$%^&*()_+asdf!@#$%^&*()_+1\nRyan Dunne Sr.!@#$%^&*()_+asdfghjkl!@#$%^&*()_+42069\nMlexia T Aartin!@#$%^&*()_+tiFCw_FrP0iY1kvd-R7WZeCfDDdpnrUwQtX0ygzAv3I=!@#$%^&*()_+1234567890\nXx_RyanDunne69420_xX!@#$%^&*()_+password!@#$%^&*()_+987654321\nR.Dunne!@#$%^&*()_+qwertyuiop!@#$%^&*()_+0\n          ryan              dunne           !@#$%^&*()_+_=*****!@#$%^&*()_+21\ndunner!@#$%^&*()_+4")
+    a = encrypt("Dunne!@#$%^&*()_+1111!@#$%^&*()_+1000\nRyan!@#$%^&*()_+1234!@#$%^&*()_+0\nRyan_Dunne!@#$%^&*()_+12345!@#$%^&*()_+9999999999999999\nMr_Dunne!@#$%^&*()_+asdf!@#$%^&*()_+1\nRyan Dunne Sr.!@#$%^&*()_+asdfghjkl!@#$%^&*()_+42069\nMlexia T Aartin!@#$%^&*()_+tiFCw_FrP0iY1kvd-R7WZeCfDDdpnrUwQtX0ygzAv3I=!@#$%^&*()_+1234567890\nXx_RyanDunne69420_xX!@#$%^&*()_+password!@#$%^&*()_+987654321\nR.Dunne!@#$%^&*()_+qwertyuiop!@#$%^&*()_+0\n          ryan              dunne           !@#$%^&*()_+      p a s s w o r d          !@#$%^&*()_+21\ndunner!@#$%^&*()_+*****!@#$%^&*()_+4")
     print(a)
     print("\n")
     print(decrypt(a)) #testing if encrypt and decrypt both work

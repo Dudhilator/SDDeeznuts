@@ -1,5 +1,5 @@
 The Ryan Dunne Bank ATM Receipt
-User: Ryan Dunne Sr.
+User: dunner
 ______________________________________
 
 No transactions took place
