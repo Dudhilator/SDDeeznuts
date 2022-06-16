@@ -1,6 +1,6 @@
 import random 
 from cryptography.fernet import Fernet
-#key.txt has 3 lines, first line is key for caesar cipher, second is for key cipher and third is for Fernet module
+#key.txt has 5 lines, first line is key for caesar cipher, second is for key cipher, third is for Fernet module, fourth is ??? and fifth is ???
 
 def encrypt(text):
     return caesar_encrypt(key_encrypt(fernet_encrypt(text))) #encrypt the line 3 times and return encrypted text 
@@ -101,11 +101,15 @@ def fernet_decrypt(text):
     key_object = Fernet(bytes(read_key(2), "utf-8")) #read the key and turn into byte, then turn into key object
     return key_object.decrypt(bytes(text,"utf-8")).decode('utf-8') #turn the text into bytes for the key object to decrypt, then turn back into string 
 
+
+
 if __name__ == "__main__": #this part only runs if you manually run this file, and does not run when imported in ATM.py
-    a = encrypt("Dunne!@#$%^&*()_+1111!@#$%^&*()_+1000")
+    a = encrypt("Dunne!@#$%^&*()_+1111!@#$%^&*()_+1000\nRyan!@#$%^&*()_+1234!@#$%^&*()_+0\nRyan_Dunne!@#$%^&*()_+12345!@#$%^&*()_+9999999999999999\nMr_Dunne!@#$%^&*()_+asdf!@#$%^&*()_+1\nRyan Dunne Sr.!@#$%^&*()_+asdfghjkl!@#$%^&*()_+42069\nMlexia T Aartin!@#$%^&*()_+tiFCw_FrP0iY1kvd-R7WZeCfDDdpnrUwQtX0ygzAv3I=!@#$%^&*()_+1234567890\nXx_RyanDunne69420_xX!@#$%^&*()_+password!@#$%^&*()_+987654321\nR.Dunne!@#$%^&*()_+qwertyuiop!@#$%^&*()_+0\n          ryan              dunne           !@#$%^&*()_+_=*****!@#$%^&*()_+21\ndunner!@#$%^&*()_+4")
     print(a)
+    print("\n")
     print(decrypt(a)) #testing if encrypt and decrypt both work
     
-    #The above is template in case need to reset usernamepassword.txt as the key is changed each time you use the encrypt function, as program cooks if usernamepassword.txt is empty
-    #run this file and copy paste the encrypted text into the usernamepassword.txt and save it, then the main file should run properly
+    #The above is template in case need to reset usernamepassword.txt as the key is changed each time you use the encrypt function, as main program cooks if usernamepassword.txt is empty 
+    #It will reset the database to the default 10 users (need 10 users because the marking criteria said so)
+    #run this file and copy paste the encrypted text(first line) into the usernamepassword.txt and save it, then the main file should run properly
 

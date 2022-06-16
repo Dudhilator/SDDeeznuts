@@ -1,16 +1,9 @@
-The Alexia T Martin Bank ATM Receipt
-User: john
-______________________________________________
+The Ryan Dunne Bank ATM Receipt
+User: Ryan Dunne Sr.
+______________________________________
 
-07/06/2022 21:13:00   Withdrawal             0
-07/06/2022 21:13:02   Deposit              100
-07/06/2022 21:13:04   Withdrawal            50
-07/06/2022 21:13:06   Deposit             1000
-07/06/2022 21:13:14   Deposit           100000
-07/06/2022 21:13:17   Withdrawal        100000
-07/06/2022 21:13:22   Withdrawal          1050
+No transactions took place
 
-07/06/2022 21:13:27   Balance                0
-______________________________________________
+______________________________________
 We strive to make the world
 a better place for the rich

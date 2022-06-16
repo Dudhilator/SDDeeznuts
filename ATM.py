@@ -26,7 +26,7 @@ def login_menu():
         for line in decrypt_database().split(sep = "\n"): #split up the decrypted text into lines with each line being a different user
             database[line.strip().split(sep = "!@#$%^&*()_+")[0]] = (line.strip().split(sep = "!@#$%^&*()_+")[1], line.strip().split(sep = "!@#$%^&*()_+")[2]) # username: (password, balance)
     
-    print('''Welcome to The Alexia T Martin Bank
+    print('''Welcome to The Ryan Dunne Bank
 -----------------------------------------------------------------------------------------------
 INFORMATION 
 We only accept positive whole numbers
@@ -60,6 +60,7 @@ Withdrawals have to be notes only
                             case '1':
                                 AmountOfTimesLoggedIn = 0
                             case '2':
+                                print("\n")
                                 login_menu()
             else: 
                 print("Invalid username or password")
@@ -102,7 +103,7 @@ def main_menu():
     print('3: Check Balance')
     print('4: Quit')
 
-    action = verify_input("Press the number of the action you would like to do ", ["1","2","3","4", "withdraw", "deposit", "check balance", "balance", "quit"])
+    action = verify_input("Enter the number of the action you would like to do ", ["1","2","3","4", "withdraw", "deposit", "check balance", "balance", "quit"])
     match action:
         case "1": withdraw_function()
         case "2": deposit_function()
@@ -117,7 +118,7 @@ def main_menu():
 def find_largest_number(): #find how many digits each transaction has and return largest digit length
     global current_balance
     charactercountinglist = [len(str(transaction[1])) for transaction in transactions] #get the num of digit of each trarnsaction
-    charactercountinglist.append(len(str(current_balance)))
+    charactercountinglist.append(len(str(current_balance))) #add current balance
     charactercountinglist.sort(reverse = True)
     return charactercountinglist[0] #return the largest num of digit
 
@@ -129,7 +130,7 @@ def end_screen(): #print receipt
         balancecount = 0
         largest_number = find_largest_number()
         f = open('Receipt.txt','w')
-        f.write('The Alexia T Martin Bank ATM Receipt\n')
+        f.write('The Ryan Dunne Bank ATM Receipt\n')
         f.write('User: ' + username + "\n")
 
         while underscorecount <= largest_number+39: #fomrat the balance
@@ -167,7 +168,7 @@ def end_screen(): #print receipt
         f.close()
     else: # if no transactions take place 
         f = open('Receipt.txt','w')
-        f.write('The Alexia T Martin Bank ATM Receipt\n')
+        f.write('The Ryan Dunne Bank ATM Receipt\n')
         f.write('User: ' + username + "\n")
         f.write('______________________________________')
         f.write('\n')
@@ -181,7 +182,7 @@ def end_screen(): #print receipt
         f.write('\n')
         f.write('a better place for the rich')
         f.close()
-    print('Thank you for using this ATM bank ATM')
+    print('Thank you for using this Ryan Dunne bank ATM')
 
     #write updatated balance into database
     database = decrypt_database().replace(f"{username}!@#$%^&*()_+{password}!@#$%^&*()_+{str(original_balance)}", f"{username}!@#$%^&*()_+{password}!@#$%^&*()_+{str(current_balance)}")#replace the old balance with the new balance 
@@ -195,31 +196,25 @@ def end_screen(): #print receipt
 def withdraw_function():
     global current_balance, username, password
     print('You have $'+str(current_balance) , 'in your account.')
-
-    withdraw_amount = input('How much would you like to withdraw? ')
-    while not withdraw_amount.isdigit():#only accept input if it is digits
-        print("Invalid input, please only enter a positive integer")
-        withdraw_amount = int(input("How much would you like to withdraw? "))
-    withdraw_amount = int(withdraw_amount)#now that confirmed that user inputted an integer, can use int() function to convert to integer 
-    if withdraw_amount % 5 != 0:
-        print('You can only withdraw money in $5, $10, $20, $50, and $100 notes.')
-        print('Would you like to try again?')
-        try_again = verify_input("Yes or No? ", ["yes", "no"])
-        if try_again.upper() == 'YES': withdraw_function()
-        else: main_menu()
-
+    
+    valid = False 
+    while not valid:
+        withdraw_amount = input('How much would you like to withdraw? ')
+        if not withdraw_amount.isdigit(): #check if all the characters are digits (3 in 1 check for string, floats and negatives) 
+            print("Invalid input, please only enter a positive integer")
+        elif int(withdraw_amount) % 5 != 0: #confirmed that it is an integer so can use the int() thing without an error 
+            print('You can only withdraw money in $5, $10, $20, $50, and $100 notes. Please try again.')
+        elif current_balance - int(withdraw_amount) < 0: #if attempting to withdraw more than they have
+            print(f"You cannot withdraw more than in your balance. Your current balance is ${current_balance}. Please try again")
+        else: #everything valid 
+            withdraw_amount = int(withdraw_amount)#now that confirmed that user inputted an integer, can use int() function to convert to integer and not have an error
+            valid = True 
+    
     final_balance = current_balance - withdraw_amount
+    print('Successfully withdrawn ' + str(withdraw_amount) + '. You now have $' + str(final_balance) , 'in your account.')
+    current_balance = int(final_balance) #update current balance, add the int() to copy the integer value 
+    transactions.append(("Withdrawal", withdraw_amount, datetime.now().strftime("%d/%m/%Y %H:%M:%S")))#add new transaction to list for the reciept
 
-    if final_balance >= 0:#check if amount withdrawn exceeds balance 
-        print('Successfully withdrawn ' + str(withdraw_amount) + '. You now have $' + str(final_balance) , 'in your account.')
-        current_balance = int(final_balance) #update current balance, add the int() to copy the integer value 
-        transactions.append(("Withdrawal", withdraw_amount, datetime.now().strftime("%d/%m/%Y %H:%M:%S")))#add new transaction to list for the reciept
-    else:
-        print('It appears you do not have this amount in your account.')
-        print('Would you like to try again with a more suitable amount?')
-        try_again = verify_input("Yes or No? ", ["yes", "no"])
-        if try_again.upper() == 'YES': withdraw_function()
-        else: main_menu()
     main_menu()
 
 def deposit_function():
