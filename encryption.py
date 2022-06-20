@@ -24,69 +24,69 @@ def write_key(key, line_num): #write the key to the line number needed
 
 
 def caesar_encrypt(text): # for each character in the text, convert to unicode add a random amount and convert back to character
-    key = random.randint(-10, 10)
-    write_key(str(key), 0)
-    result = ''
-    caesarlist = []
-    for char in text:
-        if ord(char) >= 100:
-            if key >= 0:
+    key = random.randint(-10, 10)#generate a random number
+    write_key(str(key), 0)#write the key on the first line of the key.txt file
+    result = ''#empty string :)
+    caesarlist = []#empty list :O
+    for char in text:#for each character in the text
+        if ord(char) >= 100:#if the unicode of the character is bigger than 99 then we need to subtract the key
+            if key >= 0:#if the key is a positive number then we can just subtract normally
                 finnishchar = chr(ord(char)-key)
                 caesarlist.append('P')
-            if key < 0:
+            if key < 0:#if the key is a negative number, then just adding would be subtracting
                 finnishchar = chr(ord(char)+key)
                 caesarlist.append('S')
-        if ord(char) < 100:
+        if ord(char) < 100:#if the unicode of the character is smaller than 100, then adding the key is fine and will be within the character map
             finnishchar = chr(ord(char)+key)
             caesarlist.append('S')
-        result += finnishchar
-    write_key(''.join(caesarlist), 5)
+        result += finnishchar#add the shifted character to the empty string
+    write_key(''.join(caesarlist), 5)#write the p's and the s's in the 6th line of the key.txt file for decryption
     return result 
 
 
 def caesar_decrypt(text):
-    key = read_key(0)
-    caesarlist = read_key(5)
-    unencryptedlist = ''
-    for charnumber in range(len(text)):
-        caesarnumber = caesarlist[charnumber]
+    key = read_key(0)#read the key that was used to encrypt
+    caesarlist = read_key(5)#read the series of p's and s's which tells us whether to add or subtract
+    unencryptedlist = ''#another empty list
+    for charnumber in range(len(text)):#give each character in the input text a number
+        caesarnumber = caesarlist[charnumber]#find whether the character corresponds with a p or an s
         if caesarnumber == 'P':
-            finnishchar = chr(ord(text[charnumber])+int(key))
+            finnishchar = chr(ord(text[charnumber])+int(key))#if it is a p, then we add the key to decrypt
         if caesarnumber == 'S':
-            finnishchar = chr(ord(text[charnumber])-int(key))
-        unencryptedlist += finnishchar
-    return unencryptedlist #same as encrypt but backwards 
+            finnishchar = chr(ord(text[charnumber])-int(key))#if it is an s, then we subtract the key to decrypt
+        unencryptedlist += finnishchar#add the decrypted characters to the empty string.
+    return unencryptedlist
 
 
 
 def key_encrypt(text):
-    result = ''
-    keything = [random.randint(1,9) for _ in range(len(text))] #get a random int from 1 - 3 for every character in usernamepassword.txt
-    keylist = []
-    for i in range(len(text)):
-        if ord(text[i]) >= 100:
+    result = ''#ANOTHER ONE
+    keything = [random.randint(1,9) for _ in range(len(text))] #get a random int from 1 - 9 for every character in usernamepassword.txt
+    keylist = []#empty list
+    for i in range(len(text)):#each character in the input text has a corresponding key which is in 'keything'
+        if ord(text[i]) >= 100:#if the unicode of the character is greater than 99, minus the corresponding key.
             finnishchar = chr(ord(text[i]) - keything[i])
-            keylist.append('P')
-        else:
+            keylist.append('P')#if we subtracted the key, append a 'p'. this is similar to the caesar cipher but it was 'p' and 's' before.
+        else:#if the unicode of the character is not greatter than 99, add the corresponding key
             finnishchar = chr(ord(text[i]) + keything[i])
-            keylist.append('O')
-        result += finnishchar #change the character at that index into unicode then adds corresponding number in keything, then converts back into character
-    write_key(''.join(keylist),4)
+            keylist.append('O')#if we added the key, append an 'o'
+        result += finnishchar #add the encrypted characters to the empty string.
+    write_key(''.join(keylist),4)#write the keylist in the 5th line of the key.txt file for decryption
     final_key = ''.join([str(a) for a in keything]) #convert all the int in the list into string and join together 
     write_key(str(final_key), 1)#write the key into the text file so that can use it for decrypt 
     return result 
 
 def key_decrypt(text):
-    keylist = read_key(4)
-    unencryptedlist = ''
+    keylist = read_key(4)#read the key from the txt.file.
+    unencryptedlist = ''#EMPTY STRING WOO
     keything = [int(char) for char in read_key(1)] #convert the keything to list of integers
-    for charnumber in range(len(text)):
-        keynumber = keylist[charnumber]
-        if keynumber == 'P':
+    for charnumber in range(len(text)):#each character in the input text is given a number which allows us to find the corresponding key.
+        keynumber = keylist[charnumber]#the letter of 'p' or 'o' which corresponds to the character is called keynumber
+        if keynumber == 'P':#if corresponding letter is 'p' then we add the key
             finnishchar = chr(ord(text[charnumber])+keything[charnumber])
-        if keynumber == 'O':
+        if keynumber == 'O':#if corresponding letter is 'o' then we subtract the key
             finnishchar = chr(ord(text[charnumber])-keything[charnumber])
-        unencryptedlist += finnishchar #subtract the corresponding num in the keylist from each character in the string
+        unencryptedlist += finnishchar #add the decrypted text to the empty string
     return unencryptedlist
 
 
