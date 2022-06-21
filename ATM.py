@@ -3,12 +3,14 @@ from datetime import datetime
 from encryption import decrypt, encrypt
 transactions = []
 
+#Joshua did this bit 
 def decrypt_database():  
     with open("usernamepassword.txt", "r") as f:
         return decrypt(f.read())
 
 #print(decrypt_database()) #for debugging, note that the separator is !@#$%^&*()_+ and database in format of username!@#$%^&*()_+password!@#$%^&*()_+balance, with each line being a new entry
 
+#Joshua copy pasted this from previous assignment
 def verify_input(text, options): #this function just loops the input until the user inputs one of the options
     user_input = input(text).lower().strip()
     while user_input not in [option.lower() for option in options] or not user_input: # if user input is not exactly what is in options, or if input is empty string ask user to enter input again
@@ -18,11 +20,11 @@ def verify_input(text, options): #this function just loops the input until the u
 
 
 
-
+#Both worked on this function
 def login_menu():
     global current_balance, username, database, password, original_balance
     database = {}
-    with open("usernamepassword.txt",'r') as f:
+    with open("usernamepassword.txt",'r') as f: 
         for line in decrypt_database().split(sep = "\n"): #split up the decrypted text into lines with each line being a different user
             database[line.strip().split(sep = "!@#$%^&*()_+")[0]] = (line.strip().split(sep = "!@#$%^&*()_+")[1], line.strip().split(sep = "!@#$%^&*()_+")[2]) # username: (password, balance)
     
@@ -37,7 +39,7 @@ Withdrawals have to be notes only
     login_or_register = verify_input("Would you like to login or register? ", ["login", "register"])
     if login_or_register == "login": # if user logging in 
         logged_in = False 
-        AmountOfTimesLoggedIn = 0
+        AmountOfTimesLoggedIn = 0 
         while not logged_in:
             username = input('Please enter your username: ')
             password = pwinput.pwinput('Please enter your password: ') #used pwinput instead of getpass because I wanted to see * instead of hiding the user input completely
@@ -65,7 +67,7 @@ Withdrawals have to be notes only
             else: 
                 print("Invalid username or password")
                 AmountOfTimesLoggedIn += 1
-                if AmountOfTimesLoggedIn == 3:
+                if AmountOfTimesLoggedIn == 3: #Samuel did the check for amount of times attempted
                     print('It appears that you have forgotten your credentials')
                     print('Would you like to keep trying or quit?')
                     print('1) Continue trying')
@@ -77,7 +79,7 @@ Withdrawals have to be notes only
                         case '2':
                             login_menu()
     else: # if user registering
-        is_registered = False
+        is_registered = False #Joshua did the register thing 
         while not is_registered:
             username = input('What would you like your username to be? ') 
             password = pwinput.pwinput('What would you like your password to be? ') #use getpass to hide user password
@@ -95,6 +97,7 @@ Withdrawals have to be notes only
         original_balance = 0
     main_menu()#once user been logged in or registered, start main program
 
+#Both did this function
 def main_menu(): 
     print("\n")
     print('What would you like to do?')
@@ -115,6 +118,7 @@ def main_menu():
         case "balance": balance_function()
         case "quit": end_screen()
 
+#Samuel did this function
 def find_largest_number(): #find how many digits each transaction has and return largest digit length
     global current_balance
     charactercountinglist = [len(str(transaction[1])) for transaction in transactions] #get the num of digit of each trarnsaction
@@ -122,6 +126,7 @@ def find_largest_number(): #find how many digits each transaction has and return
     charactercountinglist.sort(reverse = True)
     return charactercountinglist[0] #return the largest num of digit
 
+#Samuel did this bit for formatting receipt 
 def end_screen(): #print receipt
     global transactions, current_balance, original_balance
     if transactions: # if transactions took place 
@@ -184,6 +189,7 @@ def end_screen(): #print receipt
         f.close()
     print('Thank you for using this Ryan Dunne bank ATM')
 
+    #Joshua did the update to database section
     #write updatated balance into database
     database = decrypt_database().replace(f"{username}!@#$%^&*()_+{password}!@#$%^&*()_+{str(original_balance)}", f"{username}!@#$%^&*()_+{password}!@#$%^&*()_+{str(current_balance)}")#replace the old balance with the new balance 
     with open("usernamepassword.txt", "w") as f:
@@ -193,12 +199,13 @@ def end_screen(): #print receipt
 
     quit()
 
+#Both did this function 
 def withdraw_function():
     global current_balance, username, password
     print('You have $'+str(current_balance) , 'in your account.')
     
     valid = False 
-    while not valid:
+    while not valid: 
         withdraw_amount = input('How much would you like to withdraw? ')
         if not withdraw_amount.isdigit(): #check if all the characters are digits (3 in 1 check for string, floats and negatives) 
             print("Invalid input, please only enter a positive integer")
@@ -209,7 +216,7 @@ def withdraw_function():
         else: #everything valid 
             withdraw_amount = int(withdraw_amount)#now that confirmed that user inputted an integer, can use int() function to convert to integer and not have an error
             valid = True 
-    
+    #Samuel did this bit
     final_balance = current_balance - withdraw_amount
     print('Successfully withdrawn ' + str(withdraw_amount) + '. You now have $' + str(final_balance) , 'in your account.')
     current_balance = int(final_balance) #update current balance, add the int() to copy the integer value 
@@ -217,6 +224,7 @@ def withdraw_function():
 
     main_menu()
 
+#Both did this function
 def deposit_function():
     global current_balance, username, password
     print('You have $'+str(current_balance) , 'in your account.')
@@ -232,10 +240,11 @@ def deposit_function():
     transactions.append(("Deposit   ", deposit_amount, datetime.now().strftime("%d/%m/%Y %H:%M:%S")))#add new transaction to list for the reciept
     main_menu()
 
+#Samuel did this function
 def balance_function():
     global current_balance
     print('You have $'+ str(current_balance) , 'in your account')
     main_menu()
     
-if __name__ == "__main__":
+if __name__ == "__main__": #Joshua did this 
     login_menu()

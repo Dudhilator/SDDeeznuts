@@ -1,9 +1,11 @@
 The Ryan Dunne Bank ATM Receipt
-User: dunner
-______________________________________
+User: asdf
+___________________________________________
 
-No transactions took place
+21/06/2022 14:12:52   Deposit           200
+21/06/2022 14:12:53   Withdrawal        100
 
-______________________________________
+21/06/2022 14:12:54   Balance           100
+___________________________________________
 We strive to make the world
 a better place for the rich

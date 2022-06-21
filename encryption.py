@@ -1,7 +1,8 @@
 import random 
 from cryptography.fernet import Fernet
-#key.txt has 5 lines, first line is key for caesar cipher, second is for key cipher, third is for Fernet module, fourth is ??? and fifth is ???
+#key.txt has 5 lines, first line is key for caesar cipher, second is for key cipher, third is for Fernet module, fourth is whether to add or subtract for key_encrypt/decrypt, fifth is whether to add or subtract for caesar_encrypt/decrypt
 
+#both did encrypt and decrypt
 def encrypt(text):
     return caesar_encrypt(key_encrypt(fernet_encrypt(text))) #encrypt the line 3 times and return encrypted text 
 
@@ -9,7 +10,7 @@ def decrypt(text):
     return fernet_decrypt(key_decrypt(caesar_decrypt(text))) #decrypt in opposite order and return decrypted text
 
 
-
+#Joshua did read_key and write_key
 def read_key(line_num): #read key at line number
     with open("key.txt", "r") as f:
         return f.readlines()[line_num].strip()
@@ -17,12 +18,12 @@ def read_key(line_num): #read key at line number
 def write_key(key, line_num): #write the key to the line number needed 
     with open("key.txt", "r") as f: #for some reason r+ does some wacky stuff so have to manually open to read then close then open to write 
         content = f.readlines()
-    content[line_num] = key + "\n" #change that line to new key 
+    content[line_num] = key if line_num == 4 else key + "\n" #change the line to new key
     with open("key.txt","w") as f:
         f.writelines(content)
 
 
-
+#Samuel did caesar_encrypt/decrypt
 def caesar_encrypt(text): # for each character in the text, convert to unicode add a random amount and convert back to character
     key = random.randint(-10, 10)#generate a random number
     write_key(str(key), 0)#write the key on the first line of the key.txt file
@@ -40,13 +41,13 @@ def caesar_encrypt(text): # for each character in the text, convert to unicode a
             finnishchar = chr(ord(char)+key)
             caesarlist.append('S')
         result += finnishchar#add the shifted character to the empty string
-    write_key(''.join(caesarlist), 5)#write the p's and the s's in the 6th line of the key.txt file for decryption
+    write_key(''.join(caesarlist), 4)#write the p's and the s's in the 5th line of the key.txt file for decryption
     return result 
 
 
 def caesar_decrypt(text):
     key = read_key(0)#read the key that was used to encrypt
-    caesarlist = read_key(5)#read the series of p's and s's which tells us whether to add or subtract
+    caesarlist = read_key(4)#read the series of p's and s's which tells us whether to add or subtract
     unencryptedlist = ''#another empty list
     for charnumber in range(len(text)):#give each character in the input text a number
         caesarnumber = caesarlist[charnumber]#find whether the character corresponds with a p or an s
@@ -58,7 +59,7 @@ def caesar_decrypt(text):
     return unencryptedlist
 
 
-
+#Samuel did key_encrypt/decrypt
 def key_encrypt(text):
     result = ''#ANOTHER ONE
     keything = [random.randint(1,9) for _ in range(len(text))] #get a random int from 1 - 9 for every character in usernamepassword.txt
@@ -71,13 +72,13 @@ def key_encrypt(text):
             finnishchar = chr(ord(text[i]) + keything[i])
             keylist.append('O')#if we added the key, append an 'o'
         result += finnishchar #add the encrypted characters to the empty string.
-    write_key(''.join(keylist),4)#write the keylist in the 5th line of the key.txt file for decryption
+    write_key(''.join(keylist),3)#write the keylist in the 4th line of the key.txt file for decryption
     final_key = ''.join([str(a) for a in keything]) #convert all the int in the list into string and join together 
     write_key(str(final_key), 1)#write the key into the text file so that can use it for decrypt 
     return result 
 
 def key_decrypt(text):
-    keylist = read_key(4)#read the key from the txt.file.
+    keylist = read_key(3)#read the key from the txt.file.
     unencryptedlist = ''#EMPTY STRING WOO
     keything = [int(char) for char in read_key(1)] #convert the keything to list of integers
     for charnumber in range(len(text)):#each character in the input text is given a number which allows us to find the corresponding key.
@@ -89,7 +90,7 @@ def key_decrypt(text):
         unencryptedlist += finnishchar #add the decrypted text to the empty string
     return unencryptedlist
 
-
+#Joshua did fernet_encrypt/decrypt
 #this bit mega annoying since had to keep converting to string to write/read to file then to byte to encrypt/decrypt
 def fernet_encrypt(text):
     key = Fernet.generate_key() #make a new key (in byte)
@@ -102,7 +103,7 @@ def fernet_decrypt(text):
     return key_object.decrypt(bytes(text,"utf-8")).decode('utf-8') #turn the text into bytes for the key object to decrypt, then turn back into string 
 
 
-
+#Joshua did the reset database thing
 if __name__ == "__main__": #this part only runs if you manually run this file, and does not run when imported in ATM.py
     a = encrypt("Dunne!@#$%^&*()_+1111!@#$%^&*()_+1000\nRyan!@#$%^&*()_+1234!@#$%^&*()_+0\nRyan_Dunne!@#$%^&*()_+12345!@#$%^&*()_+9999999999999999\nMr_Dunne!@#$%^&*()_+asdf!@#$%^&*()_+1\nRyan Dunne Sr.!@#$%^&*()_+asdfghjkl!@#$%^&*()_+42069\nMlexia T Aartin!@#$%^&*()_+tiFCw_FrP0iY1kvd-R7WZeCfDDdpnrUwQtX0ygzAv3I=!@#$%^&*()_+1234567890\nXx_RyanDunne69420_xX!@#$%^&*()_+password!@#$%^&*()_+987654321\nR.Dunne!@#$%^&*()_+qwertyuiop!@#$%^&*()_+0\n          ryan              dunne           !@#$%^&*()_+      p a s s w o r d          !@#$%^&*()_+21\ndunner!@#$%^&*()_+*****!@#$%^&*()_+4")
     print(a)
